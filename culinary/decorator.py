@@ -7,7 +7,8 @@ import culinary
 
 
 def dispatch(prefix=None):
-    """Dispatches the current function to specific implementation. The `prefix`
+    """
+    Dispatches the current function to specific implementation. The `prefix`
     parameter indicates the common option prefix, and the `option_select()`
     function will determine the function suffix.
 
@@ -15,23 +16,23 @@ def dispatch(prefix=None):
 
     {{{
     @dispatch("package")
-    def package_ensure(...):
+    def ensure(...):
         ...
-    def package_ensure_apt(...):
+    def ensure_apt(...):
         ...
-    def package_ensure_yum(...):
+    def ensure_yum(...):
         ...
     }}}
 
     and then when a user does
 
     {{{
-    cuisine.option_select("package", "yum")
-    cuisine.package_ensure(...)
+    option.select("package", "yum")
+    package.ensure(...)
     }}}
 
     then the `dispatch` function will dispatch `package_ensure` to
-    `package_ensure_yum`.
+    `ensure_yum`.
 
     If your prefix is the first word of the function name before the
     first `_` then you can simply use `@dispatch` without parameters.

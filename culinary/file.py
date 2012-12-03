@@ -14,8 +14,10 @@ from .core import run
 
 
 def local_read(location):
-    """Reads a *local* file from the given location, expanding '~' and
-    shell variables."""
+    """
+    Reads a *local* file from the given location, expanding '~' and shell
+    variables.
+    """
     p = os.path.expandvars(os.path.expanduser(location))
     f = file(p, 'rb')
     t = f.read()
@@ -104,8 +106,8 @@ def write(location, content, mode=None, owner=None, group=None, sudo=None,
                 with mode.sudo(use_sudo):
                     result = run(("echo '%s' | base64 --decode | openssl "
                                   "zlib -d > \"%s\"") \
-                                      % (base64.b64encode(zlib.compress(content)),
-                                         location))
+                                  % (base64.b64encode(zlib.compress(content)),
+                                     location))
                 if result.failed:
                     fabric.api.abort(('Encountered error writing the file '
                                       '%s: %s') % (location, result))
@@ -190,9 +192,9 @@ def unlink(path):
 def link(source, destination, symbolic=True, mode=None, owner=None,
          group=None):
     """
-    Creates a (symbolic) link between source and destination on the
-    remote host.
-    optionally setting its mode/owner/group."""
+    Creates a (symbolic) link between source and destination on the remote
+    host. optionally setting its mode/owner/group.
+    """
     if exists(destination) and (not is_link(destination)):
         raise Exception("Destination already exists and is not a link: %s" \
                 % (destination))
@@ -211,9 +213,8 @@ def sha256(location):
     Returns the SHA-256 sum (as a hex string) for the remote file at the given
     location.
     """
-    # NOTE: In some cases, sudo can output errors in here -- but the
-    # errors will
-    # appear before the result, so we simply split and get the last line to
-    # be on the safe side.
+    # NOTE: In some cases, sudo can output errors in here -- but the errors
+    # will appear before the result, so we simply split and get the last
+    # line to be on the safe side.
     sig = run('shasum -a 256 "%s" | cut -d" " -f1' % (location)).split("\n")
     return sig[-1].strip()

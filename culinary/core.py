@@ -21,13 +21,6 @@ def sudo_password(password=None):
             fabric.api.env[SUDO_PASSWORD] = password
 
 
-# =============================================================================
-#
-# RUN/SUDO METHODS
-#
-# =============================================================================
-
-
 def run_local(command, sudo=False, shell=True, pty=True, combine_stderr=None):
     """
     Local implementation of fabric.api.run() using subprocess.
@@ -45,9 +38,7 @@ def run_local(command, sudo=False, shell=True, pty=True, combine_stderr=None):
                                stderr=stderr)
     out, err = process.communicate()
     # FIXME: Should stream the output, and only print it if fabric's properties
-    # allow it
-    # print out
-    # Wrap stdout string and add extra status attributes
+    # allow it print out Wrap stdout string and add extra status attributes.
     result = fabric.operations._AttributeString(out.rstrip('\n'))
     result.return_code = process.returncode
     result.succeeded = process.returncode == 0
@@ -57,8 +48,10 @@ def run_local(command, sudo=False, shell=True, pty=True, combine_stderr=None):
 
 
 def run(*args, **kwargs):
-    """A wrapper to Fabric's run/sudo commands that takes into account
-    the `MODE_LOCAL` and `MODE_SUDO` modes of Cuisine."""
+    """
+    A wrapper to Fabric's run/sudo commands that takes into account the
+    `MODE_LOCAL` and `MODE_SUDO` modes.
+    """
     if mode.is_local():
         if mode.is_sudo():
             kwargs.setdefault("sudo", True)
@@ -71,8 +64,9 @@ def run(*args, **kwargs):
 
 
 def sudo(*args, **kwargs):
-    """A wrapper to Fabric's run/sudo commands, using the
-    'cuisine.MODE_SUDO' global to tell whether the command should be run as
-    regular user or sudo."""
+    """
+    A wrapper to Fabric's run/sudo commands, using the 'mode.MODE_SUDO'
+    global to tell whether the command should be run as regular user or sudo.
+    """
     with mode.sudo():
         return run(*args, **kwargs)

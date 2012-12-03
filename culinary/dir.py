@@ -13,7 +13,7 @@ def exists(location):
 
 
 def remove(location, recursive=True):
-    """ Removes a directory """
+    """Removes a directory."""
     flag = ''
     if recursive:
         flag = 'r'
@@ -22,11 +22,13 @@ def remove(location, recursive=True):
 
 
 def ensure(location, recursive=False, mode=None, owner=None, group=None):
-    """Ensures that there is a remote directory at the given location,
-    optionally updating its mode/owner/group.
+    """
+    Ensures that there is a remote directory at the given location, optionally
+    updating its mode/owner/group.
 
-    If we are not updating the owner/group then this can be done as a single
-    ssh call, so use that method, otherwise set owner/group after creation."""
+    If we are not updating the owner/group then this can be done as a single ssh
+    call, so use that method, otherwise set owner/group after creation.
+    """
     if not exists(location):
         run('mkdir %s "%s" && echo OK ; true' % (recursive and "-p" or "", location))
     if owner or group or mode:

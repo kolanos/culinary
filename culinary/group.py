@@ -59,10 +59,13 @@ def user_ensure(group, user):
 
 
 def user_del(group, user):
-        """remove the given user from the given group."""
+        """Remove the given user from the given group."""
         assert check(group), "Group does not exist: %s" % (group)
         if user_check(group, user):
-                group_for_user = run("cat /etc/group | egrep -v '^%s:' | grep '%s' | awk -F':' '{print $1}' | grep -v %s; true" % (group, user, user)).splitlines()
-                if group_for_user:
-                    sudo("usermod -G '%s' '%s'" \
-                            % (",".join(group_for_user), user))
+            group_for_user = run(("cat /etc/group | egrep -v '^%s:' | grep "
+                                  "'%s' | awk -F':' '{print $1}' | grep -v "
+                                  "%s; true") \
+                                          % (group, user, user)).splitlines()
+            if group_for_user:
+                sudo("usermod -G '%s' '%s'" \
+                        % (",".join(group_for_user), user))
