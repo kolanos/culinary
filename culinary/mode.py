@@ -1,4 +1,4 @@
-import fabric
+import fabric.api
 
 MODE_LOCAL = "MODE_LOCAL"
 MODE_SUDO = "MODE_SUDO"
@@ -6,7 +6,7 @@ MODE_SUDO = "MODE_SUDO"
 
 class __mode_switcher(object):
     """
-    A class that can be used to switch Cuisine's run modes by instanciating the
+    A class that can be used to switch run modes by instanciating the
     class or using it as a context manager.
     """
     MODE_VALUE = True
@@ -29,9 +29,9 @@ class __mode_switcher(object):
 
 class local(__mode_switcher):
     """
-    Sets Cuisine into local mode, where run/sudo won't go through Fabric's API,
-    but directly through a popen. This allows you to easily test your Cuisine
-    scripts without using Fabric.
+    Set local mode, where run/sudo won't go through Fabric's API, but directly
+    through a popen. This allows you to easily test your scripts without
+    using Fabric.
     """
     MODE_KEY = MODE_LOCAL
     MODE_VALUE = True
@@ -47,19 +47,19 @@ class remote(__mode_switcher):
 
 
 class user(__mode_switcher):
-    """Cuisine functions will be executed as the current user."""
+    """Functions will be executed as the current user."""
     MODE_KEY = MODE_SUDO
     MODE_VALUE = False
 
 
 class sudo(__mode_switcher):
-    """Cuisine functions will be executed with sudo."""
+    """Functions will be executed with sudo."""
     MODE_KEY = MODE_SUDO
     MODE_VALUE = True
 
 
 def mode(key):
-    """Queries the given Cuisine mode (ie. MODE_LOCAL, MODE_SUDO)"""
+    """Queries the given mode (ie. MODE_LOCAL, MODE_SUDO)"""
     return fabric.api.env.get(key, False)
 
 

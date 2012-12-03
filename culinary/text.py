@@ -1,17 +1,10 @@
-import string
-
 import re
+import string
 
 RE_SPACES = re.compile("[\s\t]+")
 MAC_EOL = "\n"
 UNIX_EOL = "\n"
 WINDOWS_EOL = "\r\n"
-
-# =============================================================================
-#
-# TEXT PROCESSING
-#
-# =============================================================================
 
 
 def detect_eol(text):

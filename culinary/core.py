@@ -3,7 +3,7 @@ from __future__ import with_statement
 import StringIO
 import subprocess
 
-import fabric
+import fabric.api
 
 from . import mode
 
@@ -64,7 +64,7 @@ def run(*args, **kwargs):
             kwargs.setdefault("sudo", True)
         return run_local(*args, **kwargs)
     else:
-        if is_sudo():
+        if mode.is_sudo():
             return fabric.api.sudo(*args, **kwargs)
         else:
             return fabric.api.run(*args, **kwargs)

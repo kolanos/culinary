@@ -1,11 +1,5 @@
 from .core import run, sudo
 
-# =============================================================================
-#
-# GROUP OPERATIONS
-#
-# =============================================================================
-
 
 def create(name, gid=None):
     """Creates a group with the given name, and optionally given gid."""

@@ -1,12 +1,6 @@
 from .core import run
 from .package import install
 
-# =============================================================================
-#
-# SHELL COMMANDS
-#
-# =============================================================================
-
 
 def check(command):
     """Tests if the given command is available on the system."""

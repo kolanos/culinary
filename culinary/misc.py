@@ -1,6 +1,6 @@
 from __future__ import with_statement
 
-import fabric
+import fabric.api
 
 from . import file, mode, text
 from .core import sudo

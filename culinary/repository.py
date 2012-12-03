@@ -1,12 +1,6 @@
 from .core import sudo
 from .decorator import dispatch
 
-# =============================================================================
-#
-# REPOSITORY OPERATIONS
-#
-# =============================================================================
-
 
 @dispatch
 def ensure(repository):
@@ -32,7 +26,7 @@ def ensure_apt(repository):
 
 
 def ensure_yum(repository):
-    raise Exception("Not implemented for Yum")
+    raise NotImplementedError("Not implemented for yum")
 
 
 # -----------------------------------------------------------------------------

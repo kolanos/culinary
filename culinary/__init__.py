@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-VERSION = "0.0.1"
+__version__ = "0.0.1"
 
-from . import option
+from . import (command, core, dir, file, group, misc, mode, option, package,
+               process, python, repository, ssh, text, user)
 
 
 # Sets up the default options so that @dispatch'ed functions work

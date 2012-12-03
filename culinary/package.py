@@ -1,12 +1,6 @@
 from .core import run, sudo
 from .decorator import dispatch
 
-# =============================================================================
-#
-# PACKAGE OPERATIONS
-#
-# =============================================================================
-
 
 @dispatch
 def upgrade():

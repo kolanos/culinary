@@ -1,12 +1,6 @@
 from . import file
 from .core import run
 
-# =============================================================================
-#
-# DIRECTORY OPERATIONS
-#
-# =============================================================================
-
 
 def attribs(location, mode=None, owner=None, group=None, recursive=False):
     """Updates the mode/owner/group for the given remote directory."""

@@ -1,13 +1,7 @@
-import fabric
+import fabric.api
 
 from .core import run, sudo
 from .decorator import dispatch
-
-# =============================================================================
-#
-# PYTHON PACKAGE OPERATIONS
-#
-# =============================================================================
 
 
 @dispatch('package')

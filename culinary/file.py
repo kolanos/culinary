@@ -6,16 +6,11 @@ import os
 import tempfile
 import zlib
 
-import fabric
+import fabric.api
+import fabric.operations
 
 from . import mode
 from .core import run
-
-# =============================================================================
-#
-# FILE OPERATIONS
-#
-# =============================================================================
 
 
 def local_read(location):

@@ -1,13 +1,8 @@
 import functools
+
 import types
 
-import fabric
-
-# =============================================================================
-#
-# DECORATORS
-#
-# =============================================================================
+import fabric.api
 
 
 def dispatch(prefix=None):

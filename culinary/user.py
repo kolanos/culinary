@@ -3,12 +3,6 @@ import base64
 from . import group
 from .core import sudo
 
-# =============================================================================
-#
-# USER OPERATIONS
-#
-# =============================================================================
-
 
 def passwd(name, passwd, encrypted_passwd=False):
     """Sets the given user password."""

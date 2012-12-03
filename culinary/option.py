@@ -1,4 +1,4 @@
-import fabric
+import fabric.api
 
 OPTION_PACKAGE = "OPTION_PACKAGE"
 OPTION_PYTHON_PACKAGE = "OPTION_PYTHON_PACKAGE"
@@ -10,12 +10,6 @@ DEFAULT_OPTIONS = dict(
     package="apt",
     python_package="pip"
 )
-
-# =============================================================================
-#
-# OPTIONS
-#
-# =============================================================================
 
 
 def select_package(selection=None):
