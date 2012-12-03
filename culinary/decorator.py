@@ -1,8 +1,9 @@
 import functools
-
 import types
 
 import fabric.api
+
+import culinary
 
 
 def dispatch(prefix=None):
@@ -39,12 +40,13 @@ def dispatch(prefix=None):
         def wrapper(*args, **kwargs):
             function_name = function.__name__
             _prefix = prefix or function_name.split("_")[0].replace(".", "_")
-            select = fabric.api.env.get("CUISINE_OPTION_" + _prefix.upper())
+            select = fabric.api.env.get("OPTION_" + _prefix.upper())
             assert select, \
                 ("No option defined for: %s, call select_%s(<YOUR OPTION>) "
                  "to set it") % (_prefix.upper(),
-                                 prefix.lower().replace(".", "_"))
+                                 _prefix.lower().replace(".", "_"))
             function_name = function.__name__ + "_" + select
+            function_name = function.__module__ + "." + function_name
             specific = eval(function_name)
             if specific:
                 if type(specific) == types.FunctionType:
@@ -57,6 +59,7 @@ def dispatch(prefix=None):
         # We copy name and docstring
         functools.update_wrapper(wrapper, function)
         return wrapper
+
     if type(prefix) == types.FunctionType:
         return dispatch_wrapper(prefix, None)
     else:

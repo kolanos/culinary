@@ -4,17 +4,17 @@ from .core import run, sudo
 from .decorator import dispatch
 
 
-@dispatch('package')
+@dispatch('python package')
 def package_upgrade(package):
     """Upgrades the defined python package."""
 
 
-@dispatch('package')
+@dispatch('python package')
 def package_install(package=None):
     """Installs the given python package/list of python packages."""
 
 
-@dispatch('package')
+@dispatch('python package')
 def package_ensure(package):
     """
     Tests if the given python package is installed, and installes it in
@@ -22,7 +22,7 @@ def package_ensure(package):
     """
 
 
-@dispatch('package')
+@dispatch('python package')
 def package_remove(package):
     """Removes the given python package."""
 

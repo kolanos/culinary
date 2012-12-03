@@ -2,7 +2,7 @@ from .core import sudo
 from .decorator import dispatch
 
 
-@dispatch
+@dispatch('package')
 def ensure(repository):
     """
     Tests if the given repository is installed, and installs it in case it's not

@@ -2,11 +2,11 @@ from .core import run, sudo
 from .decorator import dispatch
 
 
-@dispatch
+@dispatch("package")
 def upgrade():
     """Updates every package present on the system."""
 
-@dispatch
+@dispatch("package")
 def update(package=None):
     """
     Updates the package database (when no argument) or update the package or
@@ -14,7 +14,7 @@ def update(package=None):
     """
 
 
-@dispatch
+@dispatch("package")
 def install(package, update=False):
     """
     Installs the given package/list of package, optionally updating the package
@@ -22,7 +22,7 @@ def install(package, update=False):
     """
 
 
-@dispatch
+@dispatch("package")
 def ensure(package, update=False):
     """
     Tests if the given package is installed, and installs it in case it's not
@@ -31,7 +31,7 @@ def ensure(package, update=False):
     """
 
 
-@dispatch
+@dispatch("package")
 def clean(package=None):
     """Clean the repository for un-needed files."""
 
