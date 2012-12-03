@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 from . import (command, core, dir, file, group, misc, mode, option, package,
                process, python, repository, ssh, text, user)
