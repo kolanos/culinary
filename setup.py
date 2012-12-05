@@ -16,7 +16,7 @@ setup(
     author="Michael Lavers",
     author_email="kolanos@gmail.com",
     url="http://github.com/kolanos/culinary",
-    download_url="https://github.com/kolanos/culinary/tarball/%s" % (VERSION),
+    download_url="https://github.com/kolanos/culinary/tarball/v{0}".format(VERSION),
     keywords=["fabric", "chef", "ssh", "cuisine"],
     install_requires=["fabric"],
     packages=["culinary"],
@@ -29,4 +29,5 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Utilities"
     ],
+    license="BSD",
 )

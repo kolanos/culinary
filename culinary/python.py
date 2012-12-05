@@ -40,10 +40,10 @@ def package_upgrade_pip(package, E=None):
     the path to a virtualenv. If provided, it will be added to the pip call.
     """
     if E:
-        E = '-E %s' % E
+        E = '-E {0}'.format(E)
     else:
         E = ''
-    run('pip upgrade %s %s' % (E, package))
+    run('pip upgrade {0} {1}'.format(E, package))
 
 
 def package_install_pip(package=None, r=None, pip=None):
@@ -58,9 +58,9 @@ def package_install_pip(package=None, r=None, pip=None):
     """
     pip = pip or fabric.api.env.get('pip', 'pip')
     if package:
-        run('%s install %s' % (pip, package))
+        run('{0} install {1}'.format(pip, package))
     elif r:
-        run('%s install -r %s' % (pip, r))
+        run('{0} install -r {1}'.format(pip, r))
     else:
         raise Exception("Either a package name or the requirements file has "
                         "to be provided.")
@@ -95,7 +95,7 @@ def package_remove_pip(package, E=None, pip=None):
     the path to a virtualenv. If provided, it will be added to the pip call.
     """
     pip = pip or fabric.api.env.get('pip', 'pip')
-    return run('%s uninstall %s' % (pip, package))
+    return run('{0} uninstall {1}'.format(pip, package))
 
 
 # -----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ def package_upgrade_easy_install(package):
     The "package" argument, defines the name of the package that will be
     upgraded.
     """
-    run('easy_install --upgrade %s' % package)
+    run('easy_install --upgrade {0}'.format(package))
 
 
 def package_install_easy_install(package):
@@ -116,7 +116,7 @@ def package_install_easy_install(package):
     The "package" argument, defines the name of the package that will be
     installed.
     """
-    sudo('easy_install %s' % package)
+    sudo('easy_install {0}'.format(package))
 
 
 def package_ensure_easy_install(package):
@@ -137,4 +137,4 @@ def package_remove_easy_install(package):
     removed.
     """
     # FIXME: this will not remove egg file etc.
-    run('easy_install -m %s' % package)
+    run('easy_install -m {0}'.format(package))

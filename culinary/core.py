@@ -32,7 +32,7 @@ def run_local(command, sudo=False, shell=True, pty=True, combine_stderr=None):
         combine_stderr = fabric.api.env.combine_stderr
     # TODO: Pass the SUDO_PASSWORD variable to the command here
     if sudo:
-        command = "sudo " + command
+        command = "sudo {0}".format(command)
     stderr = subprocess.STDOUT if combine_stderr else subprocess.PIPE
     process = subprocess.Popen(command, shell=shell, stdout=subprocess.PIPE,
                                stderr=stderr)

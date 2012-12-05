@@ -12,11 +12,11 @@ def upstart_ensure(name):
     necessary.
     """
     with fabric.api.settings(warn_only=True):
-        status = sudo("service %s status" % name)
+        status = sudo("service {0} status".format(name))
     if status.failed:
-        sudo("service %s start" % name)
+        sudo("service {0} start".format(name))
     else:
-        sudo("service %s restart" % name)
+        sudo("service {0} restart".format(name))
 
 
 def system_uuid_alias_add():
@@ -38,12 +38,12 @@ def system_uuid():
 
 # Only tested on Ubuntu!
 def locale_check(locale):
-    locale_data = sudo("locale -a | egrep '^%s$' ; true" % (locale,))
+    locale_data = sudo("locale -a | egrep '^{0}$' ; true".format(locale,))
     return locale_data == locale
 
 
 def locale_ensure(locale):
     if not locale_check(locale):
         with fabric.context_managers.settings(warn_only=True):
-            sudo("/usr/share/locales/install-language-pack %s" % (locale,))
+            sudo("/usr/share/locales/install-language-pack {0}".format(locale))
         sudo("dpkg-reconfigure locales")

@@ -6,6 +6,7 @@ from .decorator import dispatch
 def upgrade():
     """Updates every package present on the system."""
 
+
 @dispatch("package")
 def update(package=None):
     """
@@ -47,28 +48,37 @@ def update_apt(package=None):
     else:
         if type(package) in (list, tuple):
             package = " ".join(package)
-        sudo('DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade ' + package)
+        sudo(('DEBIAN_FRONTEND=noninteractive apt-get --yes '
+              '-o Dpkg::Options::="--force-confdef" '
+              '-o Dpkg::Options::="--force-confold" '
+              'upgrade {0}').format(package))
 
 
 def upgrade_apt():
-    sudo('DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade')
+    sudo(('DEBIAN_FRONTEND=noninteractive apt-get --yes '
+          '-o Dpkg::Options::="--force-confdef" '
+          '-o Dpkg::Options::="--force-confold" upgrade'))
 
 
 def install_apt(package, update=False):
     if update:
-        sudo('DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" update')
+        sudo(('DEBIAN_FRONTEND=noninteractive apt-get --yes '
+              '-o Dpkg::Options::="--force-confdef" '
+              '-o Dpkg::Options::="--force-confold" update'))
     if type(package) in (list, tuple):
         package = " ".join(package)
-    sudo("DEBIAN_FRONTEND=noninteractive apt-get --yes install %s" % (package))
+    sudo(("DEBIAN_FRONTEND=noninteractive apt-get --yes "
+          "install {0}").format(package))
 
 
 def ensure_apt(package, update=False):
-    status = run("dpkg-query -W -f='${Status}' %s ; true" % package)
+    status = run("dpkg-query -W -f='${Status}' {0} ; true".format(package))
     if status.find("not-installed") != -1 or status.find("installed") == -1:
         install(package, update)
         return False
     else:
-        if update: update(package)
+        if update:
+            update(package)
         return True
 
 
@@ -92,7 +102,7 @@ def update_yum(package=None):
     else:
         if type(package) in (list, tuple):
             package = " ".join(package)
-        sudo("yum -y upgrade " + package)
+        sudo("yum -y upgrade {0}".format(package))
 
 
 def install_yum(package, update=False):
@@ -100,16 +110,17 @@ def install_yum(package, update=False):
         sudo("yum -y update")
     if type(package) in (list, tuple):
         package = " ".join(package)
-    sudo("yum -y install %s" % (package))
+    sudo("yum -y install {0}".format(package))
 
 
 def ensure_yum(package, update=False):
-    status = run("yum list installed %s ; true" % package)
+    status = run("yum list installed {0} ; true".format(package))
     if status.find("No matching Packages") != -1 or status.find(package) == -1:
         install(package, update)
         return False
     else:
-        if update: update(package)
+        if update:
+            update(package)
         return True
 
 
@@ -123,7 +134,8 @@ def clean_yum(package=None):
 
 
 def upgrade_zypper():
-    sudo("zypper --non-interactive --gpg-auto-import-keys update --type package")
+    sudo(("zypper --non-interactive --gpg-auto-import-keys update "
+          "--type package"))
 
 
 def update_zypper(package=None):
@@ -132,7 +144,8 @@ def update_zypper(package=None):
     else:
         if type(package) in (list, tuple):
             package = " ".join(package)
-        sudo("zypper --non-interactive --gpg-auto-import-keys update --type package " + package)
+        sudo(("zypper --non-interactive --gpg-auto-import-keys update "
+              "--type package {0}").format(package))
 
 
 def install_zypper(package, update=False):
@@ -140,11 +153,14 @@ def install_zypper(package, update=False):
         update_zypper()
     if type(package) in (list, tuple):
         package = " ".join(package)
-    sudo("zypper --non-interactive --gpg-auto-import-keys install --type package --name " + package)
+    sudo(("zypper --non-interactive --gpg-auto-import-keys install "
+          "--type package --name {0}").format(package))
 
 
 def ensure_zypper(package, update=False):
-    status = run("zypper --non-interactive --gpg-auto-import-keys search --type package --installed-only --match-exact %s ; true" % package)
+    status = run(("zypper --non-interactive --gpg-auto-import-keys "
+                  "search --type package --installed-only "
+                  "--match-exact {0} ; true").format(package))
     if status.find("No packages found.") != -1 or status.find(package) == -1:
         install_zypper(package)
         return False

@@ -9,7 +9,8 @@ def attribs(location, mode=None, owner=None, group=None, recursive=False):
 
 def exists(location):
     """Tells if there is a remote directory at the given location."""
-    return run('test -d "%s" && echo OK ; true' % (location)).endswith("OK")
+    result = run('test -d "{0}" && echo OK ; true'.format(location))
+    return result.endswith("OK")
 
 
 def remove(location, recursive=True):
@@ -18,7 +19,7 @@ def remove(location, recursive=True):
     if recursive:
         flag = 'r'
     if exists(location):
-        return run('rm -%sf %s && echo OK ; true' % (flag, location))
+        return run('rm -{0}f {1} && echo OK ; true'.format(flag, location))
 
 
 def ensure(location, recursive=False, mode=None, owner=None, group=None):
@@ -26,11 +27,12 @@ def ensure(location, recursive=False, mode=None, owner=None, group=None):
     Ensures that there is a remote directory at the given location, optionally
     updating its mode/owner/group.
 
-    If we are not updating the owner/group then this can be done as a single ssh
-    call, so use that method, otherwise set owner/group after creation.
+    If we are not updating the owner/group then this can be done as a single
+    ssh call, so use that method, otherwise set owner/group after creation.
     """
     if not exists(location):
-        run('mkdir %s "%s" && echo OK ; true' % (recursive and "-p" or "", location))
+        run('mkdir {0} "{1}" && echo OK ; true'\
+                .format(recursive and "-p" or "", location))
     if owner or group or mode:
         attribs(location, owner=owner, group=group, mode=mode,
                 recursive=recursive)

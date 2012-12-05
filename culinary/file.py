@@ -19,7 +19,7 @@ def local_read(location):
     variables.
     """
     p = os.path.expandvars(os.path.expanduser(location))
-    f = file(p, 'rb')
+    f = open(p, 'rb')
     t = f.read()
     f.close()
     return t
@@ -29,36 +29,41 @@ def read(location):
     """Reads the *remote* file at the given location."""
     # NOTE: We use base64 here to be sure to preserve the encoding
     # (UNIX/DOC/MAC) of EOLs
-    return base64.b64decode(run('cat "%s" | base64' % (location)))
+    return base64.b64decode(run('cat "{0}" | base64'.format(location)))
 
 
 def exists(location):
     """Tests if there is a *remote* file at the given location."""
-    return run('test -e "%s" && echo OK ; true' % (location)).endswith("OK")
+    result = run('test -e "{0}" && echo OK ; true'.format(location))
+    return result.endswith("OK")
 
 
 def is_file(location):
-    return run("test -f '%s' && echo OK ; true" % (location)).endswith("OK")
+    result = run("test -f '{0}' && echo OK ; true".format(location))
+    return result.endswith("OK")
 
 
 def is_dir(location):
-    return run("test -d '%s' && echo OK ; true" % (location)).endswith("OK")
+    result = run("test -d '{0}' && echo OK ; true".format(location))
+    return result.endswith("OK")
 
 
 def is_link(location):
-    return run("test -L '%s' && echo OK ; true" % (location)).endswith("OK")
+    result = run("test -L '{0}' && echo OK ; true".format(location))
+    return result.endswith("OK")
 
 
 def attribs(location, mode=None, owner=None, group=None, recursive=False):
-    """Updates the mode/owner/group for the remote file at the given
-    location."""
+    """
+    Updates the mode/owner/group for the remote file at the given location.
+    """
     recursive = recursive and "-R " or ""
     if mode:
-        run('chmod %s %s "%s"' % (recursive, mode,  location))
+        run('chmod {0} {1} "{2}"'.format(recursive, mode,  location))
     if owner:
-        run('chown %s %s "%s"' % (recursive, owner, location))
+        run('chown {0} {1} "{2}"'.format(recursive, owner, location))
     if group:
-        run('chgrp %s %s "%s"' % (recursive, group, location))
+        run('chgrp {0} {1} "{2}"'.format(recursive, group, location))
 
 
 def attribs_get(location):
@@ -67,7 +72,7 @@ def attribs_get(location):
     otherwise.
     """
     if exists(location):
-        fs_check = run('stat %s %s' % (location, '--format="%a %U %G"'))
+        fs_check = run('stat {0} {1}'.format(location, '--format="%a %U %G"'))
         (mod, owner, group) = fs_check.split(' ')
         return {'mode': mod, 'owner': owner, 'group': group}
     else:
@@ -76,8 +81,10 @@ def attribs_get(location):
 
 def write(location, content, mode=None, owner=None, group=None, sudo=None,
           check=True):
-    """Writes the given content to the file at the given remote
-    location, optionally setting mode/owner/group."""
+    """
+    Writes the given content to the file at the given remote location,
+    optionally setting mode/owner/group.
+    """
     # FIXME: Big files are never transferred properly!
     # Gets the content signature and write it to a secure tempfile
     use_sudo = sudo if sudo is not None else mode.is_sudo()
@@ -88,7 +95,7 @@ def write(location, content, mode=None, owner=None, group=None, sudo=None,
     if not exists(location) or sig != sha256(location):
         if mode.is_local():
             with mode.sudo(use_sudo):
-                run('cp "%s" "%s"' % (local_path, location))
+                run('cp "{0}" "{1}"'.format(local_path, location))
         else:
             # FIXME: Put is not working properly, I often get stuff like:
             # Fatal error: sudo() encountered an error (return code 1) while
@@ -104,13 +111,13 @@ def write(location, content, mode=None, owner=None, group=None, sudo=None,
                 # See:
                 # http://unix.stackexchange.com/questions/22834/how-to-uncompress-zlib-data-in-unix
                 with mode.sudo(use_sudo):
-                    result = run(("echo '%s' | base64 --decode | openssl "
-                                  "zlib -d > \"%s\"") \
-                                  % (base64.b64encode(zlib.compress(content)),
-                                     location))
+                    result = run(("echo '{0}' | base64 --decode | openssl "
+                                  "zlib -d > \"{1}\"").format(
+                                      base64.b64encode(zlib.compress(content)),
+                                      location))
                 if result.failed:
                     fabric.api.abort(('Encountered error writing the file '
-                                      '%s: %s') % (location, result))
+                                      '{0}: {1}').format(location, result))
 
     # Remove the local temp file
     os.close(fd)
@@ -120,15 +127,16 @@ def write(location, content, mode=None, owner=None, group=None, sudo=None,
         with mode.sudo(use_sudo):
             sig = sha256(location)
         assert sig == sig, \
-                "File content does not matches file: %s, got %s, expects %s" \
-                % (location, repr(sig), repr(sig))
+                ("File content does not matches file: {0}, got {1}, "
+                 "expects {2}").format(location, repr(sig), repr(sig))
     with mode.sudo(use_sudo):
         attribs(location, mode=mode, owner=owner, group=group)
 
 
 def ensure(location, mode=None, owner=None, group=None):
-    """Updates the mode/owner/group for the remote file at the given
-    location."""
+    """
+    Updates the mode/owner/group for the remote file at the given location.
+    """
     if exists(location):
         attribs(location, mode=mode, owner=owner, group=group)
     else:
@@ -150,43 +158,45 @@ def upload(remote, local, sudo=None):
     if not exists(remote) or sig != sha256(remote):
         if mode.is_local():
             if use_sudo:
-                sudo('cp "%s" "%s"' % (local, remote))
+                sudo('cp "{0}" "{1}"'.format(local, remote))
             else:
-                run('cp "%s" "%s"' % (local, remote))
+                run('cp "{0}" "{1}"'.format(local, remote))
         else:
             fabric.operations.put(local, remote, use_sudo=use_sudo)
 
 
 def update(location, updater=lambda x: x):
-    """Updates the content of the given by passing the existing
-    content of the remote file at the given location to the 'updater'
-    function.
+    """
+    Updates the content of the given by passing the existing content of the
+    remote file at the given location to the 'updater' function.
 
-    For instance, if you'd like to convert an existing file to all
-    uppercase, simply do:
+    For instance, if you'd like to convert an existing file to all uppercase,
+    simply do:
 
     >   update("/etc/myfile", lambda _:_.upper())
     """
-    assert exists(location), "File does not exists: " + location
+    assert exists(location), "File does not exists: {0}".format(location)
     new_content = updater(read(location))
     # assert type(new_content) in (str, unicode,
     # fabric.operations._AttributeString), "Updater must be like
-    # (string)->string, got: %s() = %s" %  (updater, type(new_content))
-    run('echo "%s" | base64 -d > "%s"' \
-            % (base64.b64encode(new_content), location))
+    # (string)->string, got: {0}() = {1}".format(updater, type(new_content))
+    run('echo "{0}" | base64 -d > "{1}"'.format(base64.b64encode(new_content),
+                                                location))
 
 
 def append(location, content, mode=None, owner=None, group=None):
-    """Appends the given content to the remote file at the given
-    location, optionally updating its mode/owner/group."""
-    run('echo "%s" | base64 -d >> "%s"' \
-            % (base64.b64encode(content), location))
+    """
+    Appends the given content to the remote file at the given location,
+    optionally updating its mode/owner/group.
+    """
+    run('echo "{0}" | base64 -d >> "{1}"'.format(base64.b64encode(content),
+                                                 location))
     attribs(location, mode, owner, group)
 
 
 def unlink(path):
     if exists(path):
-        run("unlink '%s'" % (path))
+        run("unlink '{0}'".format(path))
 
 
 def link(source, destination, symbolic=True, mode=None, owner=None,
@@ -196,15 +206,15 @@ def link(source, destination, symbolic=True, mode=None, owner=None,
     host. optionally setting its mode/owner/group.
     """
     if exists(destination) and (not is_link(destination)):
-        raise Exception("Destination already exists and is not a link: %s" \
-                % (destination))
+        raise Exception(("Destination already exists and is not a "
+                         "link: {0}").format(destination))
     # FIXME: Should resolve the link first before unlinking
     if is_link(destination):
         unlink(destination)
     if symbolic:
-        run('ln -sf "%s" "%s"' % (source, destination))
+        run('ln -sf "{0}" "{1}"'.format(source, destination))
     else:
-        run('ln -f "%s" "%s"' % (source, destination))
+        run('ln -f "{0}" "{1}"'.format(source, destination))
     attribs(destination, mode, owner, group)
 
 
@@ -216,5 +226,6 @@ def sha256(location):
     # NOTE: In some cases, sudo can output errors in here -- but the errors
     # will appear before the result, so we simply split and get the last
     # line to be on the safe side.
-    sig = run('shasum -a 256 "%s" | cut -d" " -f1' % (location)).split("\n")
+    sig = run('shasum -a 256 "{0}" | cut -d" " -f1'.format(location))
+    sig = sig.split("\n")
     return sig[-1].strip()

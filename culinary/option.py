@@ -17,7 +17,7 @@ def select_package(selection=None):
     supported = AVAILABLE_OPTIONS["package"]
     if selection is not None:
         assert selection in supported, \
-                "Option must be one of: %s" % (supported)
+                "Option must be one of: {0}".format(supported)
         fabric.api.env[OPTION_PACKAGE] = selection
     return (fabric.api.env[OPTION_PACKAGE], supported)
 
@@ -26,6 +26,6 @@ def select_python_package(selection=None):
     supported = AVAILABLE_OPTIONS["python_package"]
     if not (selection is None):
         assert selection in supported, \
-                "Option must be one of: %s" % (supported)
+                "Option must be one of: {0}".format(supported)
         fabric.api.env[OPTION_PYTHON_PACKAGE] = selection
     return (fabric.api.env[OPTION_PYTHON_PACKAGE], supported)

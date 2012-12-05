@@ -16,7 +16,7 @@ def ensure(repository):
 
 
 def ensure_apt(repository):
-    sudo("add-apt-repository " + repository)
+    sudo("add-apt-repository {0}".format(repository))
 
 
 # -----------------------------------------------------------------------------
@@ -40,5 +40,7 @@ def ensure_zypper(repository):
         repository_uri = repository.rpartition("/")[0]
     status = run("zypper --non-interactive --gpg-auto-import-keys repos -d")
     if status.find(repository_uri) == -1:
-        sudo("zypper --non-interactive --gpg-auto-import-keys addrepo " + repository)
-        sudo("zypper --non-interactive --gpg-auto-import-keys modifyrepo --refresh " + repository_uri)
+        sudo(("zypper --non-interactive --gpg-auto-import-keys "
+              "addrepo {0}").format(repository))
+        sudo(("zypper --non-interactive --gpg-auto-import-keys "
+              "modifyrepo --refresh {0}").format(repository_uri))

@@ -43,9 +43,9 @@ def dispatch(prefix=None):
             _prefix = prefix or function_name.split("_")[0].replace(".", "_")
             select = fabric.api.env.get("OPTION_" + _prefix.upper())
             assert select, \
-                ("No option defined for: %s, call select_%s(<YOUR OPTION>) "
-                 "to set it") % (_prefix.upper(),
-                                 _prefix.lower().replace(".", "_"))
+                ("No option defined for: {0}, call select_{1}(<YOUR OPTION>) "
+                 "to set it").format(_prefix.upper(),
+                                     _prefix.lower().replace(".", "_"))
             function_name = function.__name__ + "_" + select
             function_name = function.__module__ + "." + function_name
             specific = eval(function_name)
